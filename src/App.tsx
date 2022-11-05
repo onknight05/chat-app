@@ -1,26 +1,40 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState } from 'react';
 import './App.css';
+import { ChannelContainer, ChannelListContainer, FakeAuth } from './components';
+import Cookies from 'universal-cookie';
+import Chat from './components/Chat';
+
+const cookies = new Cookies();
+const authToken = cookies.get('token');
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [isCreating, setIsCreating] = useState(false);
+	const [createType, setCreateType] = useState<number>();
+	const [isEditing, setIsEditing] = useState(false);
+
+	if (!authToken) {
+		return (<FakeAuth />);
+	}
+
+	return (
+		<div className='app__wrapper'>
+			<Chat>
+				<ChannelListContainer
+					isCreating={isCreating}
+					setIsCreating={setIsCreating}
+					setCreateType={setCreateType}
+					setIsEditing={setIsEditing}
+				/>
+				{/* <ChannelContainer
+					isCreating={isCreating}
+					setIsCreating={setIsCreating}
+					isEditing={isEditing}
+					setIsEditing={setIsEditing}
+					createType={createType}
+				/> */}
+			</Chat>
+		</div>
+	);
 }
 
 export default App;
