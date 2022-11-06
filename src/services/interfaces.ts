@@ -32,7 +32,7 @@ export interface IConversationMemberInfo {
 	lastLogin?: Date;
 }
 export interface IConversationDetail extends IConversation {
-	members: IConversationMemberInfo[]
+	members: IConversationMemberInfo[];
 }
 
 export interface ISeenData {
@@ -41,6 +41,7 @@ export interface ISeenData {
 }
 
 export interface IMessageData extends IAuditable {
+	id: string;
 	conversationId: string;
 	type: number;
 	content: string;

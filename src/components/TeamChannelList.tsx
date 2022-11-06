@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
 import React, { useState } from 'react';
-import { Avatar } from 'stream-chat-react';
 
 import { AddChannel } from '../assets';
 import CONSTANTS from '../constants';
+import { useChatContext } from '../context/ChatContext';
 import { IConversation } from '../services/interfaces';
 
 interface ITeamChannelListProps {
@@ -30,13 +30,11 @@ const TeamChannelList = ({
 	setCreateType,
 	setIsEditing,
 }: ITeamChannelListProps) => {
-	const [curSelectedId, setCurSelectedId] = useState<string>();
+	const { channel, setActiveChannel } = useChatContext();
 
 	const changeCurrentConversation = (conversation: IConversation) => {
-		console.log( '============== c', conversation );
-
-		setCurSelectedId(conversation.id);
-		// onChangeConversation && onChangeConversation(conversation);
+		setActiveChannel(conversation);
+		// TODO: set to context
 	};
 
 	if (error) {
@@ -70,7 +68,7 @@ const TeamChannelList = ({
 					console.log(showChannels, c.name);
 					return <div
 						key={c.id}
-						className={`team-channel-list__item ${curSelectedId === c.id ? 'selected' : ''}`}
+						className={`team-channel-list__item ${channel?.id === c.id ? 'selected' : ''}`}
 						onClick={() => changeCurrentConversation(c)}
 					>
 						{/* <Avatar image={c.avatar} name={c.name || `user ${c.directUserId}`} size={30}></Avatar> */}

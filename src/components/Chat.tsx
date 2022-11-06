@@ -1,20 +1,27 @@
 import React, { useState } from 'react';
-import { ChannelActionContext, ChannelStateContext, ChatContext } from '../context/context';
+import { ChatProvider } from '../context/ChatContext';
 interface IChatProps {
 	children: any;
-	client?: any;
 }
 
-const Chat = ({ children, client }: IChatProps) => {
+const Chat = ({ children }: IChatProps) => {
+	// useEffect(() => {
+	// 	if (curUser) {
+	// 		socket.current = io(apiServer, {
+	// 			transports: ['websocket'],
+	// 			auth: {
+	// 				token: localStorage.getItem('token'),
+	// 			},
+	// 			autoConnect: true,
+	// 		});
+	// 		socket.current.emit("add-user", curUser.id); // TODO
+	// 	}
+	// }, [curUser]);
 
 	return (
-		<ChatContext.Provider value={{ client }}>
-			<ChannelStateContext.Provider value={{}}>
-				<ChannelActionContext.Provider value={{}}>
-					{children}
-				</ChannelActionContext.Provider>
-			</ChannelStateContext.Provider>
-		</ChatContext.Provider>
+		<ChatProvider value={{}}>
+			{children}
+		</ChatProvider>
 
 	);
 };

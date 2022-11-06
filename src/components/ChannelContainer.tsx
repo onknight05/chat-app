@@ -1,7 +1,5 @@
 import React from 'react';
-import { Channel, MessageText } from 'stream-chat-react';
-
-import { ChannelInner, CreateChannel, EditChannel } from '.';
+import { ChannelInner, CreateChannel, EditChannel, Channel, MessageText } from '.';
 
 interface IChannelContainerProps {
 	isCreating: boolean;
@@ -37,25 +35,9 @@ const ChannelContainer = ({
 		);
 	}
 
-	const EmptyState = () => (
-		<div className='channel-empty__container'>
-			<p className='channel-empty__first'>
-				This is the beginning of your chat history.
-			</p>
-			<p className='channel-empty__second'>
-				Send messages, attachments, links, emojis, and more!
-			</p>
-		</div>
-	);
-
 	return (
 		<div className=' channel__container'>
-			<Channel
-				EmptyStateIndicator={EmptyState}
-				Message={(messageProps, i) => (
-					<MessageText key={i} {...messageProps} />
-				)}
-			>
+			<Channel>
 				<ChannelInner setIsEditing={setIsEditing} />
 			</Channel>
 		</div>

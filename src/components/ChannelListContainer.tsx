@@ -125,7 +125,7 @@ const ChannelListContainer = ({
 				/>
 			</div>
 
-			{/* <div
+			<div
 				className='channel-list__container-responsive'
 				style={{
 					left: toggleContainer ? '0%' : '-89%',
@@ -146,7 +146,7 @@ const ChannelListContainer = ({
 					setIsEditing={setIsEditing}
 					setToggleContainer={setToggleContainer}
 				/>
-			</div> */}
+			</div>
 		</>
 	);
 };

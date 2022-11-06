@@ -25,13 +25,13 @@ function App() {
 					setCreateType={setCreateType}
 					setIsEditing={setIsEditing}
 				/>
-				{/* <ChannelContainer
+				<ChannelContainer
 					isCreating={isCreating}
 					setIsCreating={setIsCreating}
 					isEditing={isEditing}
 					setIsEditing={setIsEditing}
 					createType={createType}
-				/> */}
+				/>
 			</Chat>
 		</div>
 	);

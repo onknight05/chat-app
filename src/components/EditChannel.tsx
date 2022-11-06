@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 
 import { UserList } from '.';
 import { CloseCreateChannel } from '../assets';
-import { useChatContext } from '../context/context';
+import { useChannelActionContext } from '../context/ChannelActionContext';
+import { useChatContext } from '../context/ChatContext';
 
 interface IChannelNameInputProps {
 	channelName?: string;
@@ -29,21 +30,22 @@ const ChannelNameInput = ({ channelName = '', setChannelName }: IChannelNameInpu
 
 const EditChannel = ({ setIsEditing }: IEditChannelProps) => {
 	const { channel } = useChatContext();
-	const [channelName, setChannelName] = useState<string>(channel?.data?.name || '');
+	const { update, addMembers } = useChannelActionContext();
+	const [channelName, setChannelName] = useState<string>(channel?.name || '');
 	const [selectedUserIds, setSelectedUserIds] = useState<number[]>([]);
 
 	const updateChannel = async (event: any) => {
 		if ( !channel ) return; // TODO
 		event.preventDefault();
 
-		const nameChanged = channelName !== channel?.data?.name;
+		const nameChanged = channelName !== channel?.name;
 
-		if (nameChanged) {
-			await channel.update({ name: channelName }, { text: `Channel name changed to ${channelName}` });
+		if (nameChanged && update) {
+			await update({ name: channelName }, { text: `Channel name changed to ${channelName}` });
 		}
 
-		if (selectedUserIds.length) {
-			await channel.addMembers(selectedUserIds);
+		if (selectedUserIds.length && addMembers) {
+			await addMembers(selectedUserIds);
 		}
 
 		setChannelName('');
