@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChannelInner, CreateChannel, EditChannel, Channel, MessageText } from '.';
+import { ChannelInner, CreateChannel, EditChannel, Channel } from '.';
 
 interface IChannelContainerProps {
 	isCreating: boolean;

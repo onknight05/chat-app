@@ -1,19 +1,48 @@
-import React, { createContext, PropsWithChildren, useContext } from 'react';
+import React, { createContext, PropsWithChildren, useCallback, useContext, useEffect, useMemo } from 'react';
+import CONSTANTS from '../constants';
+import { IMessageCreateDto } from '../services/dto';
 import { IMessageData } from '../services/interfaces';
+import { useChannelStateContext } from './ChannelStateContext';
+import { useChatContext } from './ChatContext';
 
 export type ChannelActionContextValue = {
-	addMembers?: (userIds: number[]) => Promise<void>;
-	update?: (data: any, options: any) => Promise<void>;
-	sendMessage?: (d: any) => void,
+	sendMessage: (msg: string) => void,
 };
 
 export const ChannelActionContext = createContext<ChannelActionContextValue | undefined>(undefined);
 
-type ChatProviderProps = PropsWithChildren<{ value: ChannelActionContextValue; }>;
+export const ChannelActionProvider = ({ children }: PropsWithChildren<{}>) => {
+	const { socket } = useChatContext();
+	const { channel } = useChannelStateContext();
 
-export const ChannelActionProvider = ({ children, value }: ChatProviderProps) => {
+	const sendMessage = useCallback(async (msg: string) => {
+		if ( socket ) {
+			const message: IMessageCreateDto = {
+				content: msg,
+				conversationId: channel.data.id,
+				type: channel.data.type,
+			};
+
+			socket.emit(CONSTANTS.EVENT_NAMES.CONVERSATION.SEND_MESSAGE, message);
+		} else {
+			console.warn('Not support now.');
+		}
+	}, [channel, socket]);
+
+	useEffect(() => {
+		if ( socket ) {
+			socket.on(CONSTANTS.EVENT_NAMES.CONVERSATION.SENDED, (msg: IMessageData) => {
+				channel.appendMessage(msg);
+			});
+		}
+	}, [channel.appendMessage, socket]);
+
+	const contextValue = useMemo(() => ({
+		sendMessage,
+	}), [sendMessage]);
+
 	return (
-		<ChannelActionContext.Provider value={value}>
+		<ChannelActionContext.Provider value={contextValue}>
 			{children}
 		</ChannelActionContext.Provider>
 	);

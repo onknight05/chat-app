@@ -3,9 +3,10 @@ import { BsEmojiSmileFill } from 'react-icons/bs';
 import { IoMdSend } from 'react-icons/io';
 import styled from 'styled-components';
 import Picker from 'emoji-picker-react';
+import { useChannelActionContext } from '../context/ChannelActionContext';
 
-export default function ChatMessageInput(props: { handleSendMsg: any }) {
-	const { handleSendMsg } = props;
+const ChatMessageInput = () => {
+	const { sendMessage } = useChannelActionContext();
 	const [msg, setMsg] = useState('');
 	const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 	const handleEmojiPickerhideShow = () => {
@@ -21,7 +22,7 @@ export default function ChatMessageInput(props: { handleSendMsg: any }) {
 	const sendChat = (event: any) => {
 		event.preventDefault();
 		if (msg.length > 0) {
-			handleSendMsg(msg);
+			sendMessage(msg);
 			setMsg('');
 		}
 	};
@@ -143,3 +144,5 @@ const Container = styled.div`
     }
   }
 `;
+
+export default ChatMessageInput;

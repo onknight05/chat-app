@@ -11,3 +11,10 @@ export interface UpdateConversationDto {
 	avatar?: string;
 	name?: string;
 }
+
+
+export interface IMessageCreateDto {
+	conversationId: string;
+	type: number;
+	content: string;
+}

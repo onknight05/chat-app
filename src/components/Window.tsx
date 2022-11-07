@@ -17,6 +17,6 @@ const Container = styled.div`
   height: 100%;
   background-color: #080420;
   @media screen and (min-width: 720px) and (max-width: 1080px) {
-    grid-template-rows: 15% 70% 15%;
+    grid-template-rows: 10% 80% 10%;
   }
 `;

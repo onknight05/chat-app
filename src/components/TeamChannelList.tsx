@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
-import React, { useState } from 'react';
+import React from 'react';
+import Avatar from 'react-avatar';
 
 import { AddChannel } from '../assets';
 import CONSTANTS from '../constants';
@@ -34,7 +35,6 @@ const TeamChannelList = ({
 
 	const changeCurrentConversation = (conversation: IConversation) => {
 		setActiveChannel(conversation);
-		// TODO: set to context
 	};
 
 	if (error) {
@@ -65,13 +65,12 @@ const TeamChannelList = ({
 		return <div>
 			{
 				_.map(showChannels, c => {
-					console.log(showChannels, c.name);
 					return <div
 						key={c.id}
 						className={`team-channel-list__item ${channel?.id === c.id ? 'selected' : ''}`}
 						onClick={() => changeCurrentConversation(c)}
 					>
-						{/* <Avatar image={c.avatar} name={c.name || `user ${c.directUserId}`} size={30}></Avatar> */}
+						<Avatar src={c.avatar} name={c.name || `user ${c.directUserId}`} size='30'></Avatar>
 						<div className='team-channel-list__item username' >
 							<h5>{c.name || `(user ${c.directUserId})`}</h5>
 						</div>

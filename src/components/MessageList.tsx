@@ -3,14 +3,27 @@ import React, { useEffect, useRef, useState } from 'react';
 import { IMessageData } from '../services/interfaces';
 import { v4 as uuidv4 } from 'uuid';
 import Cookies from 'universal-cookie'; // TODO;
+import { useChannelStateContext } from '../context/ChannelStateContext';
+import { useChatContext } from '../context/ChatContext';
 
 export default function MessageList() {
-	const [messages, setMessages] = useState<IMessageData[]>([]);
+	const { userId } = useChatContext();
+	const { channel } = useChannelStateContext();
+	// const [messages, setMessages] = useState<IMessageData[]>([]);
 	const scrollRef = useRef<any>();
+
+	// useEffect(() => {
+	// 	const loadData = async () => {
+	// 		const msgs = channel.messages;
+	// 		setMessages(msgs);
+	// 	};
+
+	// 	loadData();
+	// }, [channel]);
 
 	useEffect(() => {
 		scrollRef.current?.scrollIntoView({ behavior: 'smooth' });
-	}, [messages]);
+	}, [channel.messages]);
 
 	const EmptyState = () => (
 		<div className='channel-empty__container'>
@@ -25,38 +38,36 @@ export default function MessageList() {
 
 	return (
 		<Container>
-			{ !messages.length ? EmptyState() : <></> }
-			<div className='chat-messages'>
-				{messages.map((message) => {
-					return (
-						<div
-							ref={scrollRef}
-							key={uuidv4()
-							}>
+			{!channel.messages.length
+				? EmptyState()
+				: <div className='chat-messages'>
+					{channel.messages.map((message) => {
+						return (
 							<div
-								className={`message ${message.createdBy === new Cookies().get('userId') ? 'sended' : 'recieved'
-									}`}
+								ref={scrollRef}
+								key={uuidv4()}
 							>
-								<div className='content '>
-									<p>{message.content}</p>
+								<div
+									className={`message ${message.createdBy === userId ? 'sended' : 'received'}`}
+								>
+									<div className='content '>
+										<p>{message.content}</p>
+									</div>
 								</div>
 							</div>
-						</div>
-					);
-				})}
-			</div>
+						);
+					})}
+				</div>
+			}
 		</Container>
 	);
 }
 
 const Container = styled.div`
   display: flex;
-  grid-template-rows: 10% 80% 10%;
   gap: 0.1rem;
   overflow: hidden;
-  @media screen and (min-width: 720px) and (max-width: 1080px) {
-    grid-template-rows: 15% 70% 15%;
-  }
+  width: 100%
   .chat-header {
     display: flex;
     justify-content: space-between;
@@ -84,6 +95,7 @@ const Container = styled.div`
     flex-direction: column;
     gap: 1rem;
     overflow: auto;
+	width: 100%;
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
@@ -113,7 +125,7 @@ const Container = styled.div`
         background-color: #4f04ff21;
       }
     }
-    .recieved {
+    .received {
       justify-content: flex-start;
       .content {
         background-color: #9900ff20;

@@ -7,6 +7,7 @@ import { ChannelInfo } from '../assets';
 import CONSTANTS from '../constants';
 import { useChannelActionContext } from '../context/ChannelActionContext';
 import { useChannelStateContext } from '../context/ChannelStateContext';
+import { useChatContext } from '../context/ChatContext';
 import { IConversationMemberInfo, IUser } from '../services/interfaces';
 import ChatMessageInput from './ChatMessageInput';
 import MessageList from './MessageList';
@@ -22,16 +23,15 @@ interface IChannelInnerProps {
 }
 
 const TeamChannelHeader = ({ setIsEditing }: ITeamChannelHeaderProps) => {
+	const { userId } = useChatContext();
 	const { channel } = useChannelStateContext();
 
-	const userId = new Cookies().get('userId');
-
 	const MessagingHeader = () => {
-		if (!channel) return <></>;
-		const members: IConversationMemberInfo[] = _.filter(channel.members, user => user.id !== userId);
+		if (!channel.data) return <></>;
+		const members: IConversationMemberInfo[] = _.filter(channel.data.members, user => user.id !== userId);
 		const additionalMembers = members.length - 3;
 
-		if (channel.type === CONSTANTS.CONVERSATION.TYPE.INDIVIDUAL) {
+		if (channel.data.type === CONSTANTS.CONVERSATION.TYPE.INDIVIDUAL) {
 			return (
 				<div className='team-channel-header__name-wrapper'>
 					{members.map((user, i) => (
@@ -62,7 +62,7 @@ const TeamChannelHeader = ({ setIsEditing }: ITeamChannelHeaderProps) => {
 		return (
 			<div className='team-channel-header__channel-wrapper'>
 				<p className='team-channel-header__name'>
-					# {channel.name}
+					# {channel.data.name}
 				</p>
 				<span
 					style={{ display: 'flex' }}
@@ -94,40 +94,13 @@ const TeamChannelHeader = ({ setIsEditing }: ITeamChannelHeaderProps) => {
 };
 
 const ChannelInner = ({ setIsEditing }: IChannelInnerProps) => {
-	const [giphyState, setGiphyState] = useState(false);
-	const { sendMessage } = useChannelActionContext();
-
-	const overrideSubmitHandler = (message: any) => {
-		let updatedMessage = {
-			attachments: message.attachments,
-			mentioned_users: message.mentioned_users,
-			parent_id: message.parent?.id,
-			parent: message.parent,
-			text: message.text,
-		};
-
-		if (giphyState) {
-			updatedMessage = {
-				...updatedMessage,
-				text: `/giphy ${message.text}`,
-			};
-		}
-
-		if (sendMessage) {
-			sendMessage(updatedMessage);
-			setGiphyState(false);
-		}
-	};
-
 	return (
-		<GiphyContext.Provider value={{ giphyState, setGiphyState }}>
-			<Window>
-				<TeamChannelHeader setIsEditing={setIsEditing} />
-				<MessageList />
-				<ChatMessageInput handleSendMsg={overrideSubmitHandler} />
-			</Window>
-			{/* <Thread /> */}
-		</GiphyContext.Provider>
+		<Window>
+			<TeamChannelHeader setIsEditing={setIsEditing} />
+			<MessageList />
+			<ChatMessageInput/>
+		</Window>
+		/* <Thread /> */
 	);
 };
 
