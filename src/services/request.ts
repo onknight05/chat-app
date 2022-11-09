@@ -21,14 +21,13 @@ function setAxiosHeaderAuthen(token: string) {
 	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 }
 
-export const apiServer = 'http://localhost:3000';
 const paths = {
 	users: 'users',
 	conversations: 'conversations',
 	fake: 'fake',
 };
 
-axios.defaults.baseURL = apiServer;
+axios.defaults.baseURL = process.env.REACT_APP_API_SERVER;
 axios.defaults.headers.common['Content-Type'] = 'application/json';
 // axios.defaults.transformResponse = (data, data1, statusCode) => {
 // 	let resp
@@ -60,6 +59,8 @@ function getQueryString(query: IObject): string {
 class ServiceRequest {
 
 	static async login(userId: string | number) {
+		console.log( '=========== axios.defaults.baseURL: ', axios.defaults.baseURL );
+
 		const token = await (await axios.post(paths.fake + '/login', { userId })).data;
 
 		if (!token) throw Error('Token error');

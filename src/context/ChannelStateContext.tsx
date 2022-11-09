@@ -6,7 +6,6 @@ import { useChatContext } from './ChatContext';
 
 interface IChannelStateContextValueChannel {
 	data: IConversationDetail;
-	// getMessages: () => Promise<IMessageData[]>;
 	messages: IMessageData[];
 	appendMessage: (msg: IMessageData) => void;
 	// addMembers?: (userIds: number[]) => Promise<void>;
@@ -26,7 +25,7 @@ export const defaultChannelData: IConversationDetail = {
 };
 export const ChannelStateContext = createContext<ChannelStateContextValue|undefined>(undefined);
 export const ChannelStateProvider = ({ children }: PropsWithChildren<{}>) => {
-	const {channel} = useChatContext();
+	const {channel, socket} = useChatContext();
 	const [messages, setMessages] = useState<IMessageData[]>([]);
 	const [channelDetail, setChannelDetail] = useState<IConversationDetail|undefined>();
 

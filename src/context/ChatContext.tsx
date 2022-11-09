@@ -2,7 +2,7 @@ import React, { createContext, PropsWithChildren, useCallback, useContext, useEf
 import Cookies from 'universal-cookie';
 import { IConversation } from '../services/interfaces';
 import { io, Socket } from 'socket.io-client';
-import { apiServer } from '../services/request';
+import ServiceRequest from '../services/request';
 const cookie = new Cookies();
 
 export type ChatContextValue = {
@@ -14,6 +14,7 @@ export type ChatContextValue = {
 	) => void;
 	userId: number;
 	socket: Socket;
+	// sockets: Socket[];
 };
 export const ChatContext = createContext<ChatContextValue | undefined>(undefined);
 
@@ -21,6 +22,7 @@ export const ChatProvider = ({ children }: PropsWithChildren<{}>) => {
 	const userId = useMemo(() => +cookie.get('userId'), []);
 	const [channel, setChannel] = useState<IConversation>();
 	const socket = useRef<Socket>();
+	// const sockets = useRef<Socket[]>();
 	const setActiveChannel = useCallback(
 		async (
 			activeChannel?: IConversation,
@@ -40,14 +42,23 @@ export const ChatProvider = ({ children }: PropsWithChildren<{}>) => {
 	);
 	useEffect(() => {
 		if (userId) {
-			socket.current = io(apiServer, {
+			socket.current = io(process.env.REACT_APP_API_SERVER as string, {
 				transports: ['websocket'],
 				auth: {
 					token: cookie.get('token'),
 				},
 				autoConnect: true,
 			});
-			// socket.current.emit("add-user", curUser.id); // TODO
+			// const channels = await ServiceRequest.getConversationInfos();
+			// const nspSockets = channels.map(c => {
+			// 	return io(`${process.env.REACT_APP_API_SERVER}/${c?.id}` as string, {
+			// 		transports: ['websocket'],
+			// 		auth: {
+			// 			token: cookie.get('token'),
+			// 		},
+			// 		autoConnect: true,
+			// 	});
+			// });
 		}
 	}, [userId]);
 
@@ -56,6 +67,7 @@ export const ChatProvider = ({ children }: PropsWithChildren<{}>) => {
 		setActiveChannel,
 		userId,
 		socket: socket.current as Socket,
+		// sockets
 	}), [channel, setActiveChannel, userId]);
 
 	return (

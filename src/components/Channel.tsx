@@ -6,7 +6,7 @@ const Channel = ({ children }: PropsWithChildren<{}>) => {
 	return (
 		<>
 			<ChannelStateProvider>
-				<ChannelActionProvider value={{}}>
+				<ChannelActionProvider>
 					{children}
 				</ChannelActionProvider>
 			</ChannelStateProvider>
